@@ -1,0 +1,32 @@
+---
+
+- name: Build web server container
+  hosts: web_server
+  tasks:
+    - name: Build the container
+      containers.podman.podman_image:
+        name: web_server
+        tag: latest
+        path: "{{ playbook_dir | dirname | dirname }}"
+        state: build
+        force: true
+        build:
+          extra_args: "-f web.container"
+
+- name: Running web server container
+  hosts: web_server
+  vars:
+    num_instances: 3
+    initial_port: 8085
+  tasks:
+    - name: Run container
+      with_sequence: start=0 end={{ num_instances - '1'|int }} stride=1
+      containers.podman.podman_container:
+        name: "web_server_{{ item }}"
+        image: web_server:latest
+        state: started
+        recreate: yes
+        ports:
+          - "{{ (initial_port|int) + (item|int) }}:80"
+        volume:
+          - "{{ playbook_dir | dirname | dirname }}/index.html:/usr/share/nginx/html/index.html:ro"

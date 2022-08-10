@@ -1,0 +1,16 @@
+# Tldr container definition
+
+ARG UBUNTU_VERSION="20.04"
+
+FROM docker.io/ubuntu:$UBUNTU_VERSION
+
+RUN apt update \
+  && apt upgrade -y \
+  && apt install -y tldr \
+  && rm -rf /var/lib/apt/lists/* \
+  && mkdir -p /root/.local/share/tldr
+
+RUN /bin/tldr --update && /bin/tldr test
+
+ENTRYPOINT ["/bin/tldr"]
+CMD ["--version"]

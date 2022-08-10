@@ -1,0 +1,33 @@
+---
+
+- name: Build C++ Environment container
+  hosts: cpp_env
+  tasks:
+    - name: Build the container
+      containers.podman.podman_image:
+        name: cpp_env
+        tag: latest
+        path: "{{ playbook_dir | dirname | dirname }}"
+        state: build
+        build:
+          extra_args: "-f cpp-env.container"
+
+- name: Run C++ Environment container
+  hosts: cpp_env
+  tasks:
+    - name: Run container
+      register: cpp_env_creation
+      containers.podman.podman_container:
+        name: "cpp-env"
+        image: cpp_env:latest
+        state: started
+        recreate: yes
+        command: tail -f /dev/null   # Keep the container running until it is stopped
+        #command: trap exit INT TERM; tail -f /dev/null & wait    # Should probably use this as the command, but for some reason trap cannot be found
+        volume:
+          - "{{ playbook_dir | dirname | dirname }}/cpp-project:/workspace/cpp-project"
+
+    - name: Notifying user
+      when: cpp_env_creation is changed
+      debug:
+        msg: "Please execute the following command to enter the container: podman exec -it cpp-env /bin/bash"

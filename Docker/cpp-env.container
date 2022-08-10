@@ -1,0 +1,30 @@
+# C++ Dev Environment container definition
+
+ARG UBUNTU_VERSION="22.04"
+
+FROM docker.io/ubuntu:$UBUNTU_VERSION
+
+ENV DEBIAN_FRONTEND="noninteractive"
+
+RUN apt update \
+  && apt upgrade -y \
+  && apt install -y \
+    software-properties-common \
+    zsh \
+    git \
+    make \
+    cmake \
+    gcc \
+    g++ \
+    nano \
+    emacs \
+    vim \
+    tldr \
+    tree \
+  && apt autoremove -y \
+  && mkdir -p /root/.local/share/tldr \
+  && /bin/tldr --update \
+  && mkdir -p /workspace \
+  && echo "Packages installation and setup finished"
+
+CMD ["/bin/bash"]

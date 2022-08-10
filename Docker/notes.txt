@@ -1,0 +1,64 @@
+docker run hello-world
+docker ps
+docker ps -a
+docker run --name Hello hello-world
+docker rm <name> <hash>
+docker run --rm --name Hello hello-world
+
+docker pull ubuntu
+docker pull ubuntu:20.04
+docker run ubuntu:20.04
+docker run --name Ubuntu_Container -it ubuntu:20.04 /bin/bash
+ps -a
+docker image ls
+docker image prune
+docker container ls
+docker container prune
+
+docker build --tag web-server:v1 -f web.container
+docker images
+docker run -d -p 8080:80 --name Web-1 web-server:v1
+docker stop <names>
+docker container prune
+docker image prune
+
+# If having issues with iptables using podman-compose (WSL2 bug)
+sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+
+podman-compose -f web.compose.yml up -d web-1
+podman-compose -f web.compose.yml up -d
+podman exec -it web-1 /bin/sh
+podman-compose -f web.compose.yml down
+
+docker run --rm --name tldr -it ubuntu:20.04 /bin/bash -c "apt update && apt install -y tldr && mkdir -p /root/.local/share/tldr && tldr --update && tldr cat"
+podman build --tag tldr:ubuntu20.04 -f tldr.container
+podman run --rm tldr:ubuntu20.04
+podman run --rm tldr:ubuntu20.04 cat
+podman build --tag tldr:ubuntu22.04 --build-arg=UBUNTU_VERSION="22.04" -f tldr.container
+podman run --rm tldr:ubuntu22.04 cat
+alias tldr='podman run --rm tldr:ubuntu22.04'
+tldr tar
+
+podman build --tag cpp-env:ubuntu2204 -f cpp-env.container
+podman run --rm -it --name cpp-env -v ./cpp-project:/workspace/cpp-project cpp-env:ubuntu2204
+alias cpp-env='podman run --rm -it --name cpp-env -v ./cpp-project:/workspace/cpp-project cpp-env:ubuntu2204'
+
+cpp-env
+    cd /workspace/cpp-project
+    vim main.cpp
+    mkdir -p /workspace/cpp-project/build
+    cd /workspace/cpp-project/build
+    cmake ..
+    make app
+    ./app
+
+cpp-env tldr tar
+cpp-env zsh
+
+# Remember that closing process with PID 1 will close the container for all other processes
+alias cpp-env-join='podman exec -it cpp-env /bin/bash'
+cpp-env-join
+
+cd ansible
+ansible-playbook playbooks/web_server.yml
+ansible-playbook playbooks/cpp_env.yml

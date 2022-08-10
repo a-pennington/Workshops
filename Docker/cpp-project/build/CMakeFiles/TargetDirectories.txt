@@ -1,0 +1,3 @@
+/workspace/cpp-project/build/CMakeFiles/app.dir
+/workspace/cpp-project/build/CMakeFiles/edit_cache.dir
+/workspace/cpp-project/build/CMakeFiles/rebuild_cache.dir

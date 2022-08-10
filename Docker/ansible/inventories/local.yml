@@ -1,0 +1,17 @@
+all:
+  children:
+    # _____ nodes by server type; not to be used directly _____
+    install_group:
+      hosts:
+        localhost:
+          ansible_connection: local
+          ansible_host: 127.0.0.1
+          ansible_fqdn: localhost
+
+    # _____ nodes by product; use these for playbooks _____
+    web_server:
+      children:
+        install_group:
+    cpp_env:
+      children:
+        install_group:

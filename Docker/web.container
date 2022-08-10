@@ -1,0 +1,7 @@
+# Webpage container definition
+
+ARG NGINX_VERSION="alpine"
+
+FROM docker.io/nginx:$NGINX_VERSION
+
+COPY ./index.html /usr/share/nginx/html/index.html
